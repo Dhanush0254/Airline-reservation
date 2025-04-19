@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Your E-Ticket for the flight reservation system.">
+  <title>Your E-Ticket</title>
+  <script src="https://cdn.jsdelivr.net/npm/qrious@4.0.2/dist/qrious.min.js"></script>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #f0f8ff;
+      padding: 30px;
+    }
+    .ticket {
+      max-width: 600px;
+      margin: auto;
+      background: #fff;
+      border-radius: 12px;
+      padding: 30px;
+      box-shadow: 0 0 15px rgba(0,0,0,0.1);
+      text-align: center;
+    }
+    canvas {
+      margin-top: 20px;
+    }
+    .thank-you-message {
+      text-align: center;
+      font-size: 20px;
+      padding: 20px;
+      background: #d4edda;
+      color: #155724;
+      border-radius: 10px;
+      display: none;
+    }
+    .thank-you-message button {
+      width: 48%;
+      padding: 10px 20px;
+      background-color: #007bff;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      margin:auto;
+    }
+    .thank-you-message button:hover {
+      background-color: #0056b3;
+    }
+    input {
+      width: 30%;
+      padding: 10px;
+      margin-top: 5px;
+      border: 1px solid #ccc;
+      border-radius: 8px;
+      background-color: #007bff;
+      color: white;
+      font-weight: bold;
+      margin-top: 20px;
+      cursor: pointer;
+      transition: background 0.3s;
+    }
+    input:hover {
+      background-color: #0056b3;
+    }
+  </style>
+</head>
+<body>
+
+<div class="ticket">
+  <h2>🎟️ Your Flight E-Ticket</h2>
+  <p><strong>Ticket No:</strong> <span id="ticno"></span></p>
+  <p><strong>Name:</strong> <span id="name"></span></p>
+  <p><strong>Flight:</strong> <span id="flight"></span></p>
+  <p><strong>Date:</strong> <span id="date"></span></p>
+  <p><strong>Time:</strong> <span id="time"></span></p>
+  <p><strong>Seats:</strong> <span id="seats"></span></p>
+  <p><strong>Total Paid:</strong> ₹<span id="total"></span></p>
+  <canvas id="qr-code"></canvas><br>
+  <input type="button" onclick="closeReservation()" value="Close">
+</div>
+
+<div class="thank-you-message" id="thankYouMessage">
+  <h3>Thank you for using the Airline Reservation System!</h3>
+  <p>We hope to see you again soon.</p>
+  <button onclick="window.location.href = 'index.html';">Visit Again</button>
+  <!-- <input type="button" onclick="closeReservation()" value="Close"> -->
+  <footer style="margin-top: 50px; padding: 20px; text-align: center; background-color: #f1f1f1; font-size: 14px; color: #555;">
+    <p>&copy; 2025 Airline Reservation System. All rights reserved.</p>
+    <p>Contact us: <a href="https://www.instagram.com/_anand_siddu_/?hl=en">Anand</a>  | <a href="mailto:support@airline.com">support@airline.com</a> | <a href="tel:+1234567890">+1 (234) 567-890</a></p>
+    <p><a href="index.html">Privacy Policy</a> | <a href="index.html">Terms & Conditions</a></p>
+  </footer>
+  
+</div>
+
+<script>
+  // Retrieve the reservation data from localStorage
+  const data = JSON.parse(localStorage.getItem('reservationData'));
+
+  // If no reservation data exists, alert and redirect
+  // if (!data) {
+  //   alert("No ticket data found.");
+  //   window.location.href = 'index.html';
+  // }
+
+  // Destructure the data to individual variables
+  const { name, flight, date, time, seats, tot, ticketno } = data;
+
+  // Populate the ticket details on the page
+  document.getElementById('name').textContent = name;  // Ensure uppercase
+  document.getElementById('flight').textContent = flight;
+  document.getElementById('date').textContent = date;
+  document.getElementById('time').textContent = time;
+  document.getElementById('seats').textContent = seats;
+  document.getElementById('total').textContent = tot;
+  document.getElementById('ticno').textContent = ticketno;
+
+  // Generate QR code with reservation data
+  new QRious({
+    element: document.getElementById('qr-code'),
+    value: `Flight E-Ticket
+Ticket No: ${ticketno}
+Name: ${name.toUpperCase()}
+Flight: ${flight}
+Date: ${date}
+Time: ${time}
+Seats: ${seats}
+Paid: Rs.${tot}/-`,
+    size: 220,
+    background: 'white',
+    foreground: '#000000'
+  });
+
+  // Function to close the reservation details and clear the localStorage
+  function closeReservation() {
+    // Remove reservation data from localStorage
+    localStorage.removeItem('reservationData');
+
+    // Hide the ticket content and show the thank you message
+    document.querySelector('.ticket').style.display = 'none';
+    const thankYouMessage = document.getElementById('thankYouMessage');
+    thankYouMessage.style.display = 'block';
+  }
+  
+  </script>
+
+</body>
+</html>

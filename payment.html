@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Payment</title>
+  <style>
+    body {
+      font-family: Arial;
+      background: #f0f0f0;
+      padding: 20px;
+    }
+    .container {
+      max-width: 500px;
+      background: white;
+      padding: 30px;
+      border-radius: 12px;
+      margin: auto;
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+    }
+    h2 {
+      text-align: center;
+    }
+    .details p {
+      font-size: 16px;
+      margin: 10px 0;
+    }
+    button {
+      width: 100%;
+      padding: 12px;
+      background: #28a745;
+      border: none;
+      color: white;
+      font-weight: bold;
+      border-radius: 8px;
+      cursor: pointer;
+    }
+    #edit {
+      padding: 10px;
+      background: #28a745;
+      border: none;
+      color: white;
+      font-weight: bold;
+      border-radius: 8px;
+      cursor: pointer;
+      margin-bottom: 10px;
+      margin-right: 3%;
+    }
+    .edbox {
+      text-align: right;
+    }
+    #edit:hover, button:hover {
+      background: #218838;
+    }
+    #loader {
+      display: none;
+      width: 80px;
+      height: 80px;
+      border: 10px solid #f3f3f3;
+      border-top: 10px solid #28a745;
+      border-radius: 50%;
+      animation: spin 1s linear infinite;
+      margin: 50px auto;
+    }
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+  </style>
+</head>
+<body>
+<div class="container">
+  <h2>Complete Your Payment</h2>
+  <div class="details">
+    <p><strong>Passenger:</strong> <span id="name"></span></p>
+    <p><strong>Flight:</strong> <span id="flight"></span></p>
+    <p><strong>Date:</strong> <span id="date"></span></p>
+    <p><strong>Time:</strong> <span id="time"></span></p>
+    <p><strong>Seats:</strong> <span id="seats"></span></p>
+    <p><strong>Total Price:</strong> ₹<span id="total"></span></p>
+    <div class="edbox">
+      <input type="button" id="edit" value="Edit" onclick="editReservation()">
+    </div>
+  </div>
+  <div id="loader"></div>
+  <button onclick="completePayment()">Pay Now</button>
+</div>
+
+<script>
+  const data = JSON.parse(localStorage.getItem('reservationData'));
+
+  // if (!data) {
+  //   alert("No reservation data found.");
+  //   window.location.href = 'index.html';
+  // }
+
+  const { name, flight, date, time, price, seats,ticketno } = data;
+  const total = parseInt(price) * parseInt(seats);
+  const formattedTotal = total.toLocaleString('en-IN');
+
+  document.getElementById('name').textContent = name;
+  document.getElementById('flight').textContent = flight;
+  document.getElementById('date').textContent = date;
+  document.getElementById('time').textContent = time;
+  document.getElementById('seats').textContent = seats;
+  document.getElementById('total').textContent = formattedTotal;
+
+  data.tot = formattedTotal;
+  localStorage.setItem('reservationData', JSON.stringify(data));
+
+  function completePayment() {
+    document.querySelector('.details').style.display = 'none';
+    document.querySelector('button').style.display = 'none';
+    document.getElementById('loader').style.display = 'block';
+
+    setTimeout(() => {
+      document.getElementById('loader').style.display = 'none';
+      window.location.href = 'ticket.html';
+    }, 1000);
+  }
+
+  function editReservation() {
+    localStorage.setItem('editMode', 'true');
+    window.location.href = 'index.html';
+  }
+</script>
+
+</body>
+</html>
